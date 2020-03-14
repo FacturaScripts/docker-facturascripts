@@ -18,6 +18,7 @@ ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts
 # Unzip
 RUN unzip -q /tmp/facturascripts.zip -d /tmp; \
 	cp -r /tmp/facturascripts/* /var/www/html; \
+	chmod -R o+w /var/www/html; \
 	rm -rf /tmp/facturascript*
 
 VOLUME /var/www/html
