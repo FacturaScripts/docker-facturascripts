@@ -1,6 +1,11 @@
 # docker-facturascripts
 FacturaScripts official Docker image.
 
+## Run
+```
+docker run -d -p 80:80 facturascripts:latest
+```
+
 ## Requirements
 * **mysql-server**. You can use [official Docker mysql image](https://hub.docker.com/_/mysql) or use your currently mysql server installation.
 ​

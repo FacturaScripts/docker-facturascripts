@@ -17,7 +17,5 @@ services:
     container_name: fs-php
     ports:
       - 80:80
-    volumes:
-      - ./php:/var/www/html
     depends_on:
       - mysql
