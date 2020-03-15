@@ -1,9 +1,9 @@
 version: '3'
 
 services:
+
   mysql:
     image: mysql:8.0
-    container_name: fs-mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
@@ -12,10 +12,15 @@ services:
       MYSQL_ROOT_PASSWORD: mypassword
     volumes:
       - ./mysql:/var/lib/mysql
-  php:
-    build: .
-    container_name: fs-php
+
+  facturascripts:
+    image: facturascripts/facturascripts:latest
+    restart: always
     ports:
       - 80:80
+    volumes:
+      - ./facturascripts:/var/www/html
+    links:
+      - mysql:mysql
     depends_on:
       - mysql

@@ -16,11 +16,13 @@ ENV FS_VERSION 2020.4
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
 
 # Unzip
-RUN unzip -q /tmp/facturascripts.zip -d /tmp; \
-	cp -r /tmp/facturascripts/* /var/www/html; \
-	chmod -R o+w /var/www/html; \
-	rm -rf /tmp/facturascript*
+RUN unzip -q /tmp/facturascripts.zip -d /usr/src/; \
+	rm -rf /tmp/facturascripts.zip
 
 VOLUME /var/www/html
 
-EXPOSE 80
+# Entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["apache2-foreground"]
