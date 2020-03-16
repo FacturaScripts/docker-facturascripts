@@ -6,4 +6,4 @@ if [ ! -f "$FILE" ]; then
 	chmod -R o+w /var/www/html
 fi
 
-exec "$@"
+apache2-foreground

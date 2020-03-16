@@ -21,8 +21,6 @@ RUN unzip -q /tmp/facturascripts.zip -d /usr/src/; \
 
 VOLUME /var/www/html
 
-# Entrypoint
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["apache2-foreground"]
+COPY facturascripts.sh /usr/local/bin/facturascripts
+RUN chmod +x /usr/local/bin/facturascripts
+CMD ["facturascripts"]
