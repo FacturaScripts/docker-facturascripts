@@ -9,7 +9,7 @@ RUN apt-get update && \
 	docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
 	docker-php-ext-install bcmath gd mysqli pdo pdo_mysql pgsql zip
 
-ENV FS_VERSION 2020.61
+ENV FS_VERSION 2020.71
 
 # Download FacturaScripts
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
