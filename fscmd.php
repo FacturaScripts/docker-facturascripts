@@ -36,7 +36,7 @@ class fscmd
         } elseif($argv[1] === 'create:model-extension') {
             die("Not implemented yet\n");
         } elseif($argv[1] === 'create:controller') {
-            die("Not implemented yet\n");
+            $this->createController();
         } elseif($argv[1] === 'create:controller-extension') {
             die("Not implemented yet\n");
         } elseif($argv[1] === 'update:translations') {
@@ -50,8 +50,66 @@ class fscmd
         }
     }
 
+    private function createController()
+    {
+        $option = (int) $this->prompt('1=Controller, 2=ListController, 3=EditController');
+        if($option === 2) {
+            die("Not implemented yet\n");
+        } elseif($option === 3) {
+            die("Not implemented yet\n");
+        } elseif($option < 1 || $option > 3) {
+            die("Invalid\n");
+        }
+
+        $name = $this->prompt('Controller name');
+        $filename = $this->isCoreFolder() ? 'Core/Controller/'.$name.'.php' : 'Controller/'.$name.'.php';
+        if(file_exists($filename)) {
+            die("The controller already exists\n");
+        }
+
+        echo '* '.$filename."\n";
+        file_put_contents($filename, '<?php
+namespace FacturaScripts\\'.$this->getNamespace().'\\Controller;
+
+class '.$name.' extends \\FacturaScripts\\Core\\Base\\Controller {
+    
+    public function getPageData() {
+        $pageData = parent::getPageData();
+        $pageData["title"] = "'.$name.'";
+        $pageData["menu"] = "admin";
+        $pageData["icon"] = "fas fa-page";
+        return $pageData;
+    }
+    
+    public function privateCore(&$response, $user, $permissions) {
+        parent::privateCore($response, $user, $permissions);
+        /// tu código aquí
+    }
+}');
+        $viewFilename = $this->isCoreFolder() ? 'Core/View/'.$name.'.html.twig' : 'View/'.$name.'.html.twig';
+        if(file_exists($viewFilename)) {
+            return;
+        }
+
+        echo '* '.$viewFilename."\n";
+        file_put_contents($viewFilename, '{% extends "Master/MenuTemplate.html.twig" %}
+
+{% block body %}
+    
+{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}');
+    }
+
     private function createCron($folder)
     {
+        echo '* '.$folder."/Cron.php\n";
         file_put_contents($folder.'/Cron.php', "<?php
 namespace FacturaScripts\\Plugins\\".$folder.';
 
@@ -70,12 +128,14 @@ class Cron extends \\FacturaScripts\\Core\\Base\\CronClass {
 
     private function createGitIgnore($folder)
     {
+        echo '* '.$folder."/.gitignore\n";
         file_put_contents($folder.'/.gitignore', "/.idea/\n/nbproject/\n/node_modules/\n"
             ."/vendor/\n.DS_Store\n.htaccess\n*.cache\n*.lock\n.vscode\n*.code-workspace");
     }
 
     private function createIni($folder)
     {
+        echo '* '.$folder."/facturascripts.ini\n";
         file_put_contents($folder.'/facturascripts.ini', "description = '".$folder."'
 min_version = 2021
 name = ".$folder."
@@ -84,6 +144,7 @@ version = 0.1");
 
     private function createInit($folder)
     {
+        echo '* '.$folder."/Init.php\n";
         file_put_contents($folder.'/Init.php', "<?php
 namespace FacturaScripts\\Plugins\\".$folder.";
 
@@ -109,11 +170,12 @@ class Init extends \\FacturaScripts\\Core\\Base\\InitClass {
             die("This folder is not the root of the Plugin or Core\n");
         }
 
-        $filename = $this->isCoreFolder() ? 'Core/Model/'.$name : 'Model/'.$name;
+        $filename = $this->isCoreFolder() ? 'Core/Model/'.$name.'.php' : 'Model/'.$name.'.php';
         if(file_exists($filename)) {
             die("The model already exists\n");
         }
 
+        echo '* '.$filename."\n";
         file_put_contents($filename, '<?php
 namespace FacturaScripts\\'.$this->getNamespace().'\\Model;
 
@@ -130,12 +192,12 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass {
         return "'.$tableName.'";
     }
 }');
-
         $tableFilename = $this->isCoreFolder() ? 'Core/Table/'.$tableName.'.xml' : 'Table/'.$tableName.'.xml';
         if(file_exists($tableFilename)) {
             return;
         }
 
+        echo '* '.$tableFilename."\n";
         file_put_contents($tableFilename, '<?xml version="1.0" encoding="UTF-8"?>
 <table>
     <column>
@@ -179,8 +241,6 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass {
     "'.$name.'": "'.$name.'"
 }');
         }
-
-        echo 'Created plugin '.$name."\n";
     }
 
     private function getNamespace()
@@ -249,7 +309,7 @@ $ fscmd zip:plugin\n";
 
         /// download json from facturascripts.com
         foreach (explode(',', self::TRANSLATIONS) as $filename) {
-            echo "Download " . $filename . ".json";
+            echo "D ".$folder.$filename.".json";
             $url = "https://facturascripts.com/EditLanguage?action=json&project=".$project."&code=".$filename;
             $json = file_get_contents($url);
             if(!empty($json) && strlen($json) > 10) {
