@@ -17,11 +17,12 @@
  */
 
 if (php_sapi_name() !== 'cli') {
-    die();
+    die("Please use command line: php fscmd.php");
 }
 
 class fscmd
 {
+    const TRANSLATIONS = 'ca_ES,de_DE,en_EN,es_CL,es_CO,es_CR,es_DO,es_EC,es_ES,es_GT,es_MX,es_PE,es_UY,eu_ES,fr_FR,gl_ES,it_IT,pt_PT,va_ES';
     const VERSION = 0.1;
 
     public function __construct($argv)
@@ -41,12 +42,32 @@ class fscmd
         } elseif($argv[1] === 'create:controller-extension') {
             die("Not implemented yet\n");
         } elseif($argv[1] === 'update:translations') {
-            die("Not implemented yet\n");
+            $this->updateTranslations();
         } elseif($argv[1] === 'zip:core') {
             die("Not implemented yet\n");
         } elseif($argv[1] === 'zip:plugin') {
             die("Not implemented yet\n");
+        } else {
+            $this->help();
         }
+    }
+
+    private function createCron($folder)
+    {
+        file_put_contents($folder.'/Cron.php', "<?php
+namespace FacturaScripts\\Plugins\\".$folder.';
+
+class Cron extends \\FacturaScripts\\Core\\Base\\CronClass {
+
+    public function run() {
+        /*
+        if ($this->isTimeForJob("my-job-name", "6 hours")) {
+            /// su código aquí
+            $this->jobDone("my-job-name");
+        }
+        */
+    }
+}');
     }
 
     private function createGitIgnore($folder)
@@ -69,10 +90,13 @@ version = 0.1");
 namespace FacturaScripts\\Plugins\\".$folder.";
 
 class Init extends \\FacturaScripts\\Core\\Base\\InitClass {
+
     public function init() {
+        /// se ejecutar cada vez que carga FacturaScripts (si este plugin está activado).
     }
 
     public function update() {
+        /// se ejecutar cada vez que se instala o actualiza el plugin
     }
 }");
     }
@@ -82,27 +106,31 @@ class Init extends \\FacturaScripts\\Core\\Base\\InitClass {
         $name = $this->prompt('Plugin name');
         if(empty($name)) {
             return;
-        } elseif(file_exists('.git') || file_exists('.gitignore')) {
-            die("Can't create a plugin here");
+        } elseif(file_exists('.git') || file_exists('.gitignore') || file_exists('facturascripts.ini')) {
+            die("Can't create a plugin here\n");
         } elseif(file_exists($name)) {
-            die("Plugin ".$name." exists");
+            die("Plugin ".$name." exists\n");
         }
         
         mkdir($name);
         $this->createIni($name);
-        $this->createInit($name);
         $this->createGitIgnore($name);
+        $this->createCron($name);
+        $this->createInit($name);
         
         $folders = [
             'Assets/Images','Controller','Data/Lang/ES','Extension/Controller','Extension/Model',
-            'Extension/Table','Extension/XMLView','Lib','Model','Table','Translation','View','XMLView'
+            'Extension/Table','Extension/XMLView','Model','Table','Translation','View','XMLView'
         ];
         foreach($folders as $folder) {
             mkdir($name.DIRECTORY_SEPARATOR.$folder, 0777, true);
         }
 
-        file_put_contents($name.'/Translation/es_ES.json', '{}');
-        file_put_contents($name.'/Translation/en_EN.json', '{}');
+        foreach(explode(',', self::TRANSLATIONS) as $filename) {
+            file_put_contents($name.'/Translation/'.$filename.'.json', '{
+    "'.$name.'": "'.$name.'"
+}');
+        }
 
         echo 'Created plugin '.$name."\n";
     }
@@ -131,6 +159,40 @@ $ fscmd zip:plugin\n";
     {
         echo $label . ': ';
         return trim(fgets(STDIN));
+    }
+
+    private function updateTranslations()
+    {
+        $folder = '';
+        $project = '';
+        if(file_exists('Translation')) {
+            $folder = 'Translation/';
+            $ini = parse_ini_file('facturascripts.ini');
+            $project = $ini['name'] ?? '';
+        } elseif(file_exists('Core/Translation')) {
+            $folder = 'Core/Translation/';
+            $project = 'CORE-2018';
+        } else {
+            die("This folder is not a Plugin or Core\n");
+        }
+
+        if(empty($project)) {
+            die("Unknown project\n");
+        }
+
+        /// download json from facturascripts.com
+        foreach (explode(',', self::TRANSLATIONS) as $filename) {
+            echo "Download " . $filename . ".json";
+            $url = "https://facturascripts.com/EditLanguage?action=json&project=".$project."&code=".$filename;
+            $json = file_get_contents($url);
+            if(!empty($json) && strlen($json) > 10) {
+                file_put_contents($folder.$filename.'.json', $json);
+                echo "\n";
+                continue;
+            }
+
+            echo " - empty\n";
+        }
     }
 }
 
