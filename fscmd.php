@@ -31,10 +31,8 @@ class fscmd
             $this->help();
         } elseif($argv[1] === 'create:plugin') {
             $this->createPlugin();
-        } elseif($argv[1] === 'create:table') {
-            die("Not implemented yet\n");
         } elseif($argv[1] === 'create:model') {
-            die("Not implemented yet\n");
+            $this->createModel();
         } elseif($argv[1] === 'create:model-extension') {
             die("Not implemented yet\n");
         } elseif($argv[1] === 'create:controller') {
@@ -101,15 +99,65 @@ class Init extends \\FacturaScripts\\Core\\Base\\InitClass {
 }");
     }
 
+    private function createModel()
+    {
+        $name = $this->prompt('Model name (singular)');
+        $tableName = $this->prompt('Table name (plural)');
+        if(empty($name) || empty($tableName)) {
+            die("Empty\n");
+        } elseif(false === $this->isCoreFolder() && false === $this->isPluginFolder()) {
+            die("This folder is not the root of the Plugin or Core\n");
+        }
+
+        $filename = $this->isCoreFolder() ? 'Core/Model/'.$name : 'Model/'.$name;
+        if(file_exists($filename)) {
+            die("The model already exists\n");
+        }
+
+        file_put_contents($filename, '<?php
+namespace FacturaScripts\\'.$this->getNamespace().'\\Model;
+
+class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass {
+    use \\FacturaScripts\\Core\\Model\\Base\\ModelTrait;
+
+    public $id;
+
+    public static function primaryColumn() {
+        return "id";
+    }
+
+    public static function tableName() {
+        return "'.$tableName.'";
+    }
+}');
+
+        $tableFilename = $this->isCoreFolder() ? 'Core/Table/'.$tableName.'.xml' : 'Table/'.$tableName.'.xml';
+        if(file_exists($tableFilename)) {
+            return;
+        }
+
+        file_put_contents($tableFilename, '<?xml version="1.0" encoding="UTF-8"?>
+<table>
+    <column>
+        <name>id</name>
+        <type>serial</type>
+    </column>
+    <constraint>
+        <name>'.$tableName.'_pkey</name>
+        <type>PRIMARY KEY (id)</type>
+    </constraint>
+</table>');
+    }
+
     private function createPlugin()
     {
         $name = $this->prompt('Plugin name');
         if(empty($name)) {
-            return;
+            die("Empty name\n");
         } elseif(file_exists('.git') || file_exists('.gitignore') || file_exists('facturascripts.ini')) {
             die("Can't create a plugin here\n");
         } elseif(file_exists($name)) {
-            die("Plugin ".$name." exists\n");
+            die("Plugin ".$name." already exists\n");
         }
         
         mkdir($name);
@@ -135,13 +183,22 @@ class Init extends \\FacturaScripts\\Core\\Base\\InitClass {
         echo 'Created plugin '.$name."\n";
     }
 
+    private function getNamespace()
+    {
+        if($this->isCoreFolder()) {
+            return 'Core';
+        }
+
+        $ini = parse_ini_file('facturascripts.ini');
+        return 'Plugins\\'.$ini['name'];
+    }
+
     private function help()
     {
         echo 'FacturaScripts command line utility v' . self::VERSION . "
 
 create:
 $ fscmd create:plugin
-$ fscmd create:table
 $ fscmd create:model
 $ fscmd create:model-extension
 $ fscmd create:controller
@@ -155,6 +212,16 @@ $ fscmd zip:core
 $ fscmd zip:plugin\n";
     }
 
+    private function isCoreFolder()
+    {
+        return file_exists('Core/Translation') && false === file_exists('facturascripts.ini');
+    }
+
+    private function isPluginFolder()
+    {
+        return file_exists('facturascripts.ini');
+    }
+
     private function prompt($label)
     {
         echo $label . ': ';
@@ -165,15 +232,15 @@ $ fscmd zip:plugin\n";
     {
         $folder = '';
         $project = '';
-        if(file_exists('Translation')) {
+        if($this->isPluginFolder()) {
             $folder = 'Translation/';
             $ini = parse_ini_file('facturascripts.ini');
             $project = $ini['name'] ?? '';
-        } elseif(file_exists('Core/Translation')) {
+        } elseif($this->isCoreFolder()) {
             $folder = 'Core/Translation/';
             $project = 'CORE-2018';
         } else {
-            die("This folder is not a Plugin or Core\n");
+            die("This folder is not the root of the Plugin or Core\n");
         }
 
         if(empty($project)) {
