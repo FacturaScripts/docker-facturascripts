@@ -153,10 +153,13 @@ class Edit'.$modelName.' extends \\FacturaScripts\\Core\\Lib\\ExtendedController
 <view>
     <columns>
         <group name="data" numcolumns="12">
-            <column name="code" order="100">
+            <column name="code" display="none" order="100">
                 <widget type="text" fieldname="id" />
             </column>
-            <column name="creation-date" order="110">
+            <column name="name" order="110">
+                <widget type="text" fieldname="name" />
+            </column>
+            <column name="creation-date" order="120">
                 <widget type="datetime" fieldname="creationdate" readonly="dinamic" />
             </column>
         </group>
@@ -229,6 +232,9 @@ class List'.$modelName.' extends \\FacturaScripts\\Core\\Lib\\ExtendedController
 
     protected function createViews'.$modelName.'(string $viewName = "List'.$modelName.'") {
         $this->addView($viewName, "'.$modelName.'", "'.$title.'");
+        $this->addOrderBy($viewName, ["id"], "id");
+        $this->addOrderBy($viewName, ["name"], "name", 1);
+        $this->addSearchFields($viewName, ["id", "name"]);
     }
 }');
         $xmlviewFilename = $this->isCoreFolder() ? 'Core/XMLView/List'.$modelName.'.xml' : 'XMLView/List'.$modelName.'.xml';
@@ -243,7 +249,10 @@ class List'.$modelName.' extends \\FacturaScripts\\Core\\Lib\\ExtendedController
         <column name="code" order="100">
             <widget type="text" fieldname="id" />
         </column>
-        <column name="creation-date" display="right" order="110">
+        <column name="name" order="110">
+            <widget type="text" fieldname="name" />
+        </column>
+        <column name="creation-date" display="right" order="120">
             <widget type="datetime" fieldname="creationdate" />
         </column>
     </columns>
@@ -275,6 +284,7 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass
 
     public $creationdate;
     public $id;
+    public $name;
 
     public function clear() {
         $this->creationdate = \date(self::DATETIME_STYLE);
@@ -296,6 +306,10 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass
     <column>
         <name>id</name>
         <type>serial</type>
+    </column>
+    <column>
+        <name>name</name>
+        <type>character varying(100)</type>
     </column>
     <column>
         <name>creationdate</name>
