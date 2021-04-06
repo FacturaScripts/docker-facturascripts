@@ -17,10 +17,10 @@
  */
 
 if (php_sapi_name() !== 'cli') {
-    die("Usar: php fscmd.php");
+    die("Usar: php fsmaker.php");
 }
 
-class fscmd
+class fsmaker
 {
     const TRANSLATIONS = 'ca_ES,de_DE,en_EN,es_CL,es_CO,es_CR,es_DO,es_EC,es_ES,es_GT,es_MX,es_PE,es_UY,eu_ES,fr_FR,gl_ES,it_IT,pt_PT,va_ES';
     const VERSION = 0.2;
@@ -29,13 +29,13 @@ class fscmd
     {
         if(count($argv) < 2) {
             echo $this->help();
-        } elseif($argv[1] === 'create:plugin') {
+        } elseif($argv[1] === 'plugin') {
             echo $this->createPlugin();
-        } elseif($argv[1] === 'create:model') {
+        } elseif($argv[1] === 'model') {
             echo $this->createModel();
-        } elseif($argv[1] === 'create:controller') {
+        } elseif($argv[1] === 'controller') {
             echo $this->createController();
-        } elseif($argv[1] === 'update:translations') {
+        } elseif($argv[1] === 'translations') {
             echo $this->updateTranslations();
         } else {
             echo $this->help();
@@ -45,7 +45,9 @@ class fscmd
     private function createController()
     {
         $option = (int) $this->prompt('1=Controller, 2=ListController, 3=EditController');
-        if($option === 2) {
+        if(false === $this->isCoreFolder() && false === $this->isPluginFolder()) {
+            return "Esta no es la carpeta raíz del plugin.\n";
+        } elseif($option === 2) {
             return $this->createListController();
         } elseif($option === 3) {
             return $this->createEditController();
@@ -253,7 +255,7 @@ class List'.$name.' extends \\FacturaScripts\\Core\\Lib\\ExtendedController\\Lis
         if(empty($name) || empty($tableName)) {
             return '';
         } elseif(false === $this->isCoreFolder() && false === $this->isPluginFolder()) {
-            return "Esta no es la carpeta raíz del plugin o core.\n";
+            return "Esta no es la carpeta raíz del plugin.\n";
         }
 
         $filename = $this->isCoreFolder() ? 'Core/Model/'.$name.'.php' : 'Model/'.$name.'.php';
@@ -353,15 +355,15 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass
 
     private function help()
     {
-        return 'FacturaScripts command line utility v' . self::VERSION . "
+        return 'FacturaScripts Maker v' . self::VERSION . "
 
 create:
-$ fscmd create:plugin
-$ fscmd create:model
-$ fscmd create:controller
+$ fsmaker plugin
+$ fsmaker model
+$ fsmaker controller
 
-update:
-$ fscmd update:translations\n";
+download:
+$ fsmaker translations\n";
     }
 
     private function isCoreFolder()
@@ -399,7 +401,7 @@ $ fscmd update:translations\n";
             $folder = 'Core/Translation/';
             $project = 'CORE-2018';
         } else {
-            return "esta no es la carpeta de un plugin o core.\n";
+            return "Esta no es la carpeta raíz del plugin.\n";
         }
 
         if(empty($project)) {
@@ -422,4 +424,4 @@ $ fscmd update:translations\n";
     }
 }
 
-new fscmd($argv);
+new fsmaker($argv);

@@ -20,9 +20,9 @@ RUN unzip -q /tmp/facturascripts.zip -d /usr/src/; \
 
 VOLUME /var/www/html
 
-COPY fscmd.sh /usr/local/bin/fscmd
-COPY fscmd.php /usr/local/bin/fscmd.php
-RUN chmod +x /usr/local/bin/fscmd
+COPY fsmaker.sh /usr/local/bin/fsmaker
+COPY fsmaker.php /usr/local/bin/fsmaker.php
+RUN chmod +x /usr/local/bin/fsmaker
 
 COPY facturascripts.sh /usr/local/bin/facturascripts
 RUN chmod +x /usr/local/bin/facturascripts
