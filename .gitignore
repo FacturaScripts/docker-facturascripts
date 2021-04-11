@@ -1,0 +1,10 @@
+/dev-mariadb/facturascripts/
+/dev-mariadb/mariadb/
+/dev-mysql/facturascripts/
+/dev-mysql/mysql/
+/dev-postgres/facturascripts/
+/dev-postgres/postgres/
+/facturascripts/
+/mysql/
+.DS_Store
+.vscode

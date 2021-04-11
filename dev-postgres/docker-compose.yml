@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - ./postgres:/var/lib/postgresql
+
+  facturascripts:
+    build: ./php
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./facturascripts:/var/www/html
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

@@ -6,21 +6,11 @@ FacturaScripts official Docker image. More info at https://facturascripts.com/de
 $ docker run -d --name facturascripts -p 80:80 facturascripts/facturascripts:latest
 ```
 
-## Requirements
-**mysql-server** is required. You can use the MySQL official docker image:
+## FacturaScripts + MySQL + adminer
+Use the docker-compose.yml file to get FacturaScripts with a MySQL container (mysql) and adminer.
 ```
-$ docker pull mysql
-$ docker run --name mysql -e MYSQL_ROOT_PASSWORD=mypassword -d -p 3306:3306 mysql:latest
-
+$ docker-compose up
 ```
 
-### Install FacturaScripts
-When installing FacturaScripts, remember that if you use a mysql container, the MySQL host is the IP of the machine (or the name of the container) and not localhost.
-​
-## Build your image
-You can get the source file and build your own image.
-```
-$ git clone https://github.com/FacturaScripts/docker-facturascripts.git
-$ cd docker-facturascripts
-$ docker build -t facturascripts:latest .
-```
+## ARM / Apple Silicon (M1)
+For ARM or Apple Silicon platform use the dev-mariadb or dev-postgres composer files.

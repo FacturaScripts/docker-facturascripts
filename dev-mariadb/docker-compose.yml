@@ -2,19 +2,16 @@ version: '3'
 
 services:
 
-  mysql:
-    platform: linux/amd64
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
+  mariadb:
+    image: mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mariadb:/var/lib/mariadb
 
   facturascripts:
-    platform: linux/amd64
-    image: facturascripts/facturascripts:latest
+    build: ./php
     restart: always
     ports:
       - 80:80
@@ -22,7 +19,6 @@ services:
       - ./facturascripts:/var/www/html
 
   adminer:
-    platform: linux/amd64
     image: adminer
     restart: always
     ports:
