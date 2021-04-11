@@ -142,6 +142,13 @@ class Edit'.$modelName.' extends \\FacturaScripts\\Core\\Lib\\ExtendedController
     public function getModelClassName() {
         return "'.$modelName.'";
     }
+
+    public function getPageData() {
+        $pageData = parent::getPageData();
+        $pageData["title"] = "'.$modelName.'";
+        $pageData["icon"] = "fas fa-search";
+        return $pageData;
+    }
 }');
         $xmlviewFilename = $this->isCoreFolder() ? 'Core/XMLView/Edit'.$modelName.'.xml' : 'XMLView/Edit'.$modelName.'.xml';
         if(file_exists($xmlviewFilename)) {
@@ -304,16 +311,16 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass
             file_put_contents($tableFilename, '<?xml version="1.0" encoding="UTF-8"?>
 <table>
     <column>
+        <name>creationdate</name>
+        <type>timestamp</type>
+    </column>
+    <column>
         <name>id</name>
         <type>serial</type>
     </column>
     <column>
         <name>name</name>
         <type>character varying(100)</type>
-    </column>
-    <column>
-        <name>creationdate</name>
-        <type>timestamp</type>
     </column>
     <constraint>
         <name>'.$tableName.'_pkey</name>
