@@ -8,7 +8,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
     volumes:
-      - ./mariadb:/var/lib/mariadb
+      - ./mariadb:/var/lib/mysql
 
   facturascripts:
     build: ./php
