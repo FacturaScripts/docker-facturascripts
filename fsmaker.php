@@ -294,6 +294,7 @@ class '.$name.' extends \\FacturaScripts\\Core\\Model\\Base\\ModelClass
     public $name;
 
     public function clear() {
+        parent::clear();
         $this->creationdate = \date(self::DATETIME_STYLE);
     }
 
