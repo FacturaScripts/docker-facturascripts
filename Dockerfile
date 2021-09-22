@@ -9,7 +9,7 @@ RUN apt-get update && \
 	docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
 	docker-php-ext-install bcmath gd mysqli pdo pdo_mysql pgsql zip
 
-ENV FS_VERSION 2021.21
+ENV FS_VERSION 2021.4
 
 # Download FacturaScripts
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
@@ -19,10 +19,6 @@ RUN unzip -q /tmp/facturascripts.zip -d /usr/src/; \
 	rm -rf /tmp/facturascripts.zip
 
 VOLUME /var/www/html
-
-COPY fsmaker.sh /usr/local/bin/fsmaker
-COPY fsmaker.php /usr/local/bin/fsmaker.php
-RUN chmod +x /usr/local/bin/fsmaker
 
 COPY facturascripts.sh /usr/local/bin/facturascripts
 RUN chmod +x /usr/local/bin/facturascripts
