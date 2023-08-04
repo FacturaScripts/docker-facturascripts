@@ -14,7 +14,7 @@ docker-compose up
 
 ## Build
 ```
-docker build -t facturascripts:latest .
+docker build -t facturascripts/facturascripts:latest .
 ```
 
 ### Publish
@@ -25,7 +25,7 @@ docker push facturascripts/facturascripts:latest
 
 ### Publish a new tag
 ```
-docker build -t facturascripts:XXX .
+docker build -t facturascripts/facturascripts:XXX .
 docker tag IMAGE_ID facturascripts/facturascripts:XXX
 docker push facturascripts/facturascripts:XXX
 ```
