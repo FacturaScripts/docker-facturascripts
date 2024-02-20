@@ -23,6 +23,11 @@ docker login
 docker push facturascripts/facturascripts:latest
 ```
 
+### Multi-arch
+```
+docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64/v8 --push -t facturascripts/facturascripts:latest .
+```
+
 ### Publish a new tag
 ```
 docker build -t facturascripts/facturascripts:XXX .
