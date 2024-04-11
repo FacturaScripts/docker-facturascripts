@@ -2,11 +2,11 @@ FROM php:8.0-apache
 
 # Install dependencies
 RUN apt-get update && \
-	apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev libpq-dev libzip-dev unzip && \
+	apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev libpq-dev libzip-dev unzip libxml2-dev && \
 	apt-get clean && \
 	a2enmod rewrite && \
 	docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
-	docker-php-ext-install bcmath gd mysqli pdo pdo_mysql pgsql zip
+	docker-php-ext-install bcmath gd mysqli pdo pdo_mysql pgsql zip soap
 
 ENV FS_VERSION 2024.4
 
