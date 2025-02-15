@@ -1,14 +1,21 @@
-FROM php:8.0-apache
+FROM php:8.1-apache
 
 # Install dependencies
 RUN apt-get update && \
 	apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev libpq-dev libzip-dev unzip libxml2-dev && \
 	apt-get clean && \
-	a2enmod rewrite && \
-	docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
-	docker-php-ext-install bcmath gd mysqli pdo pdo_mysql pgsql zip soap
+	a2enmod rewrite
 
-ENV FS_VERSION 2024.92
+# Install GD
+RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
+RUN docker-php-ext-install gd
+
+# Install other extensions one by one
+RUN docker-php-ext-install bcmath
+RUN docker-php-ext-install mysqli pdo pdo_mysql pgsql zip
+RUN docker-php-ext-install soap
+
+ENV FS_VERSION 2024.94
 
 # Download FacturaScripts
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
