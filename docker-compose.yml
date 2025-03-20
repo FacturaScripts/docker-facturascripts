@@ -2,7 +2,7 @@ services:
 
   mysql:
     image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
+    command: --authentication_policy=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
@@ -22,3 +22,30 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  # facturascripts74:
+  #   build:
+  #     context: ./test/php74
+  #   restart: always
+  #   ports:
+  #     - 8081:80
+  #   volumes:
+  #     - ./test/php74/facturascripts:/var/www/html
+
+  # facturascripts80:
+  #   build:
+  #     context: ./test/php80
+  #   restart: always
+  #   ports:
+  #     - 8082:80
+  #   volumes:
+  #     - ./test/php80/facturascripts:/var/www/html
+
+  # facturascripts81:
+  #   build:
+  #     context: ./test/php81
+  #   restart: always
+  #   ports:
+  #     - 8083:80
+  #   volumes:
+  #     - ./test/php81/facturascripts:/var/www/html
