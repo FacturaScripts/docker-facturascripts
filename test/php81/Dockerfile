@@ -28,4 +28,4 @@ VOLUME /var/www/html
 
 COPY facturascripts.sh /usr/local/bin/facturascripts
 RUN chmod +x /usr/local/bin/facturascripts
-CMD ["../../facturascripts"]
+CMD ["facturascripts"]
