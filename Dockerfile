@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.4-apache
 
 # Install dependencies
 RUN apt-get update && \
@@ -15,7 +15,7 @@ RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install mysqli pdo pdo_mysql pgsql zip
 RUN docker-php-ext-install soap
 
-ENV FS_VERSION 2024.96
+ENV FS_VERSION=2025
 
 # Download FacturaScripts
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
