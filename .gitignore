@@ -8,3 +8,5 @@
 /mysql/
 .DS_Store
 .vscode
+
+/test/*/facturascripts

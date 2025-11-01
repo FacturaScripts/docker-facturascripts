@@ -2,7 +2,7 @@ services:
 
   mysql:
     image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
+    command: --authentication_policy=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: mypassword
