@@ -7,9 +7,10 @@ docker run -d --name facturascripts -p 80:80 facturascripts/facturascripts:lates
 ```
 
 ## FacturaScripts + MySQL + adminer
-Use the docker-compose.yml file to get FacturaScripts with a MySQL container (mysql) and adminer.
+Use the docker compose.yml file to get FacturaScripts with a MySQL container (mysql) and adminer.
+
 ```
-docker-compose up
+docker compose up
 ```
 
 ## Build
@@ -24,6 +25,12 @@ docker push facturascripts/facturascripts:latest
 ```
 
 ### Multi-arch
+You need qemu to build multi-arch images.
+
+```
+sudo apt install -y qemu-user-static binfmt-support
+```
+
 ```
 docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64/v8 --push -t facturascripts/facturascripts:latest .
 docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64/v8 --push -t facturascripts/facturascripts:XXX .

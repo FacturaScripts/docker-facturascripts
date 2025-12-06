@@ -1,8 +1,8 @@
-FROM php:8.4-apache-bookworm
+FROM php:8.4-apache
 
 # Install dependencies
 RUN apt-get update && \
-apt-get install -y libc-client-dev libkrb5-dev libfreetype6-dev libgmp-dev libjpeg62-turbo-dev libpng-dev libpq-dev libxml2-dev libzip-dev unzip && \
+apt-get install -y libkrb5-dev libfreetype6-dev libgmp-dev libicu-dev libjpeg62-turbo-dev libpng-dev libpq-dev libxml2-dev libzip-dev unzip && \
 	apt-get clean && \
 	a2enmod rewrite
 
@@ -15,7 +15,7 @@ RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install intl gmp mysqli pdo pdo_mysql pgsql zip
 RUN docker-php-ext-install soap
 
-ENV FS_VERSION=2025.5
+ENV FS_VERSION=2025.61
 
 # Download FacturaScripts
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
