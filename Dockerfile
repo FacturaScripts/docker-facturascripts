@@ -15,7 +15,7 @@ RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install intl gmp mysqli pdo pdo_mysql pgsql zip
 RUN docker-php-ext-install soap
 
-ENV FS_VERSION=2026.1
+ENV FS_VERSION=2026.2
 
 # Download FacturaScripts
 ADD https://facturascripts.com/DownloadBuild/1/${FS_VERSION} /tmp/facturascripts.zip
