@@ -25,11 +25,35 @@ docker push facturascripts/facturascripts:latest
 ```
 
 ### Multi-arch
-You need qemu to build multi-arch images.
+You need buildx and qemu to build multi-arch images.
+
+On Ubuntu 24.04 and older (or Debian):
 
 ```
-sudo apt install -y qemu-user-static binfmt-support
+sudo apt install -y docker-buildx qemu-user-static binfmt-support
 ```
+
+On Ubuntu 26.04 and newer, `qemu-user-static` was split into `qemu-user` + `qemu-user-binfmt`:
+
+```
+sudo apt install -y docker-buildx qemu-user-binfmt binfmt-support
+```
+
+Alternatively, register the qemu handlers with a container instead of installing them on the host
+(you still need `docker-buildx`):
+
+```
+docker run --privileged --rm tonistiigi/binfmt --install all
+```
+
+Then create a builder, because the `default` one cannot build multi-arch images nor use `--push`:
+
+```
+docker buildx create --name multiarch --driver docker-container --use
+docker buildx inspect --bootstrap
+```
+
+The `Platforms:` line must list `linux/amd64`, `linux/arm64` and `linux/arm/v7`. Now you can build:
 
 ```
 docker buildx build --platform linux/amd64,linux/arm/v7,linux/arm64/v8 --push -t facturascripts/facturascripts:latest .
