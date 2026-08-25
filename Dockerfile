@@ -2,9 +2,10 @@ FROM php:8.4-apache
 
 # Install dependencies
 RUN apt-get update && \
-apt-get install -y libkrb5-dev libfreetype6-dev libgmp-dev libicu-dev libjpeg62-turbo-dev libpng-dev libpq-dev libxml2-dev libzip-dev unzip && \
+apt-get install -y libc-client-dev libkrb5-dev libfreetype6-dev libgmp-dev libjpeg62-turbo-dev libpng-dev libpq-dev libxml2-dev libzip-dev unzip poppler-utils && \
 	apt-get clean && \
 	a2enmod rewrite
+
 
 # Install GD
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
@@ -14,6 +15,9 @@ RUN docker-php-ext-install gd
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install intl gmp mysqli pdo pdo_mysql pgsql zip
 RUN docker-php-ext-install soap
+# Para plugins que sincronizan proveedores por ftp
+RUN docker-php-ext-install ftp
+
 
 ENV FS_VERSION=2026.6
 
