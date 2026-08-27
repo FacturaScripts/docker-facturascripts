@@ -18,6 +18,21 @@ docker compose up
 docker build -t facturascripts/facturascripts:latest .
 ```
 
+### Release script
+`release.sh` builds and pushes the multi-arch images for both channels in one go. It checks that
+the versions exist on facturascripts.com, sets up the buildx builder and pushes:
+
+* stable -> `<version>` and `latest`
+* beta -> `<version>` and `beta`
+
+```
+./release.sh --stable 2026.5 --beta 2026.6
+```
+
+Use `--dry-run` to see the commands without running them, `--bump` to also update the
+`ARG FS_VERSION` default in the Dockerfile, and `--help` for the rest of the options.
+Either channel can be released on its own with just `--stable` or just `--beta`.
+
 ### Publish
 ```
 docker login
