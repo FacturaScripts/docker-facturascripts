@@ -20,6 +20,9 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    environment:
+      FS_DB_HOST: mysql
+      FS_DB_PASS: mypassword
     ports:
       - 80:80
     volumes:
